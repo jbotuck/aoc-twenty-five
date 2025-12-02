@@ -1,21 +1,29 @@
+import kotlin.math.sign
+
 fun main() {
-    fun part1(input: List<String>): Int {
-        return input.size
+    fun part1(input: List<Int>): Int {
+        return input.runningFold(50) { pos, rotation ->
+            pos.plus(rotation) % 100
+        }.count { it == 0 }
     }
 
-    fun part2(input: List<String>): Int {
-        return input.size
+    fun part2(input: List<Int>): Int {
+        var count = 0
+        var pos = 50
+        for (rotation in input) {
+            val sign = rotation.sign
+            var ticks = rotation
+            while (ticks != 0){
+                pos = pos.plus(sign) % 100
+                if (pos == 0) count++
+                ticks -= sign
+            }
+        }
+        return count
     }
 
-    // Test if implementation meets criteria from the description, like:
-    check(part1(listOf("test_input")) == 1)
-
-    // Or read a large test input from the `src/Day01_test.txt` file:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 1)
-
-    // Read the input from the `src/Day01.txt` file.
     val input = readInput("Day01")
+        .map { it.drop(1).toInt() * if (it.first() == 'R') 1 else -1 }
     part1(input).println()
     part2(input).println()
 }
